@@ -3,62 +3,8 @@
     <div class="col-lg-6 offset-lg-3">
       <div class="card text-center" style="padding: 20px">
         <h3>Registro</h3>
-        <br />
-        <form [formGroup]="register" (ngSubmit)="userReg()">
-          <!-- Name input -->
-          <div class="form-group mb-4" style="text-align: start">
-            <input
-              type="text"
-              class="form-control"
-              placeholder="Nombre"
-              formControlName="name"
-            />
-            <span
-              class="text-danger ml-2"
-              *ngIf="
-                register.get('name')?.hasError('required') &&
-                register.get('name')?.touched
-              "
-            >
-              El nombre es <strong>requerido</strong>
-            </span>
-          </div>
-          <!-- Lastname input -->
-          <div class="form-group mb-4" style="text-align: start">
-            <input
-              type="text"
-              class="form-control"
-              placeholder="Apellidos"
-              formControlName="lastNames"
-            />
-            <span
-              class="text-danger ml-2"
-              *ngIf="
-                register.get('lastNames')?.hasError('required') &&
-                register.get('lastNames')?.touched
-              "
-            >
-              Los apellidos son <strong>requeridos</strong>
-            </span>
-          </div>
-          <!-- Gender input -->
-          <div class="form-group mb-4" style="text-align: start">
-            <select class="form-select" formControlName="gender">
-              <option selected disabled value="">Genero...</option>
-              <option value="femenino">Femenino</option>
-              <option value="masculino">Masculino</option>
-              <option value="pnd">Prefiero no decirlo</option>
-            </select>
-            <span
-              class="text-danger ml-2"
-              *ngIf="
-                register.get('gender')?.hasError('required') &&
-                register.get('gender')?.touched
-              "
-            >
-              El genero es <strong>requerido</strong>
-            </span>
-          </div>
+        <app-loading *ngIf="loading"></app-loading>
+        <form [formGroup]="register" (ngSubmit)="userReg()" style="padding-top: 10px;">
           <!-- Email input -->
           <div class="form-group mb-4" style="text-align: start">
             <input
@@ -101,9 +47,23 @@
                 register.get('password')?.touched
               "
             >
-              ¡La contraseña debe tener como <strong>minimo 8 caracteres</strong> !
+              ¡La contraseña debe tener como
+              <strong>minimo 8 caracteres</strong> !
             </span>
           </div>
+          <!-- Confirm Password input -->
+          <div class="form-group" style="text-align: start">
+            <input
+              type="password"
+              class="form-control"
+              placeholder="Repetir Contraseña"
+              formControlName="confirmPassword"
+            />
+            <span class="text-danger ml-2" *ngIf="register.hasError('notSame')">
+              Contraseñas <strong>distintas</strong>
+            </span>
+          </div>
+          <br>
           <!-- Buttons -->
           <div class="form-group">
             <button class="btn btn-primary btn-reg" type="submit">

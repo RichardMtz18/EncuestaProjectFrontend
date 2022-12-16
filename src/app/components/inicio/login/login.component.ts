@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { Usuario } from '../../../models/usuario';
+import { Router } from '@angular/router';
+import { LoginService } from 'src/app/services/login.service';
 
 @Component({
   selector: 'app-login',
@@ -10,12 +11,14 @@ import { Usuario } from '../../../models/usuario';
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit {
-  login: FormGroup;
+  loading = false;
+  login: UntypedFormGroup;
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private toastr: ToastrService,
-    private router: Router
+    private router:Router,
+    private loginService: LoginService
   ) {
     this.login = this.fb.group({
       email: ['', Validators.required],
@@ -26,21 +29,32 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {}
 
   log(): void {
-    console.log(this.login);
-
     const usuario: Usuario = {
-      emailUsuario: this.login.value.email,
+      email: this.login.value.email,
       password: this.login.value.password,
     };
-
-    if (
-      usuario.emailUsuario === 'richard@gmail.com' &&
-      usuario.password === '12345'
-    ) {
+    this.loading = true;
+    this.loginService.login(usuario).subscribe(data => {
+      console.log(data);
+      this.loading = false;
+      this.loginService.setLocalStorage(data.token);
       this.router.navigate(['/dashboard']);
-    } else {
-      this.toastr.error('Email o password incorrecto', 'Error');
+    }, error => {
+      console.log(error);
+      this.loading = false;
+      this.toastr.error(error.error.message, 'Error');
+      this.login.reset();
+    });
+    /*setTimeout(()=> {
+      if (usuario.email === 'richard' && usuario.password === '12345')
+    {
+      this.login.reset();
+      this.router.navigate(['/dashboard'])
+    }else{
+      this.toastr.error('Usuario o contraseña incorrecta', 'Error');
+      this.login.reset();
     }
-    console.log(usuario);
+    this.loading = false;
+    }, 3000);*/
   }
 }

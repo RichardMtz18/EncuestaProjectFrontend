@@ -6,6 +6,10 @@ import { AppRoutingModule } from './app-routing.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+
+// Interceptors
+import { AddTokenInterceptor } from './helpers/add-token.interceptor';
 
 // Componentes
 import { AppComponent } from './app.component';
@@ -17,6 +21,8 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { CambiarPasswordComponent } from './components/dashboard/cambiar-password/cambiar-password.component';
 import { QuestionariosComponent } from './components/dashboard/questionarios/questionarios.component';
 import { NavbarComponent } from './components/dashboard/navbar/navbar.component';
+import { LoadingComponent } from './shared/loading/loading.component';
+
 
 @NgModule({
   declarations: [
@@ -28,7 +34,8 @@ import { NavbarComponent } from './components/dashboard/navbar/navbar.component'
     DashboardComponent,
     CambiarPasswordComponent,
     QuestionariosComponent,
-    NavbarComponent
+    NavbarComponent,
+    LoadingComponent
   ],
   imports: [
     BrowserModule,
@@ -36,8 +43,9 @@ import { NavbarComponent } from './components/dashboard/navbar/navbar.component'
     ReactiveFormsModule,
     BrowserAnimationsModule, // required animations module
     ToastrModule.forRoot(), // ToastrModule added
+    HttpClientModule
   ],
-  providers: [],
+  providers: [{ provide: HTTP_INTERCEPTORS, useClass: AddTokenInterceptor, multi: true },],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
